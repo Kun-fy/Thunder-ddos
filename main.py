@@ -178,6 +178,7 @@ def worker(idx, args, job_q: queue.Queue, metrics: Metrics, start_ts, end_ts):
                 f"{sum(v for k,v in metrics.codes.items() if 400<=k<500)}/"
                 f"{sum(v for k,v in metrics.codes.items() if 500<=k<600)}"
             )
+            print(f"\Fore.GREEN {status_code}")
             sys.stdout.flush()
             last_log = time.time()
 
