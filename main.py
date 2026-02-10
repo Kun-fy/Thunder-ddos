@@ -10,6 +10,7 @@ import threading
 import time
 import argparse
 from arts import Header, options
+from arts.set_headers import Header)
 
 config = {}     # Menyimpan konfigurasi yang diberikan oleh pengguna.
 success = 0     # Jumlah paket yang berhasil dikirim
