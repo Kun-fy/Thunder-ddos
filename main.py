@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 # -*- encoding: UTF-8 -*-
-
 import random
 import re
 try:
